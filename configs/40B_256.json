@@ -1,8 +1,8 @@
 {
-  "layers": 28,
-  "d_model": 4096,
-  "n_heads": 16,
-  "n_vocab": 50400,
+  "layers": 48,
+  "d_model": 8192,
+  "n_heads": 32,
+  "n_vocab": 51200,    
   "norm": "layernorm",
   "pe": "rotary",
   "pe_rotary_dims": 64,
@@ -14,15 +14,15 @@
 
   "warmup_steps": 3000,
   "anneal_steps": 300000,
-  "lr": 1.2e-4,
-  "end_lr": 1.2e-5,
+  "lr": 0.8e-4,
+  "end_lr": 0.8e-5,
   "weight_decay": 0.1,
   "total_steps": 350000,
 
   "tpu_size": 256,
 
-  "bucket": "neo-models",
-  "model_dir": "mesh_jax_pile_6B_rotary",
+  "bucket": "shanghai-models",
+  "model_dir": "GPT3_40B",
 
   "train_set": "pile.train.index",
   "val_set": {
@@ -38,6 +38,6 @@
   "ckpt_every": 500,
   "keep_every": 10000,
 
-  "name": "GPT3_6B_pile_rotary",
+  "name": "GPT3_40B_pile_rotary",
   "comment": ""
 }
