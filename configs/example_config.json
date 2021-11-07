@@ -12,30 +12,31 @@
   "per_replica_batch": 1,
   "gradient_accumulation_steps": 16,
 
-  "warmup_steps": 7,
-  "anneal_steps": 65,
+  "warmup_steps": 1000,
+  "anneal_steps": 14193,
   "lr": 5e-5,
   "end_lr": 1e-5,
   "weight_decay": 0.1,
-  "total_steps": 72,
+  "total_steps": 15193,
 
   "tpu_size": 8,
 
-  "bucket": "your-bucket",
-  "model_dir": "finetune_dir",
+  "bucket": "donation-dox",
+  "model_dir": "lit-6b-jax",
 
-  "train_set": "example.train.index",
+  "train_set": "lit.train.index",
   "val_set": {},
 
   "eval_harness_tasks": [
+	  "lambada"
   ],
 
-  "val_batches": 0,
-  "val_every": 80,
-  "ckpt_every": 72,
-  "keep_every": 72,
+  "val_batches": 100,
+  "val_every": 3798,
+  "ckpt_every": 15193,
+  "keep_every": 15193,
 
-  "name": "example_model",
+  "name": "lit-6b",
   "wandb_project": "mesh-transformer-jax",
   "comment": ""
 }
