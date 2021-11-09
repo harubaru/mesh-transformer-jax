@@ -114,6 +114,10 @@ class CausalTransformerShard(hk.Module):
 
         return self.proj(x), new_states
 
+def apply_repetition_penalty(logits, tokens, repetition_penalty):
+    penalty_logits = jnp.take(logits, tokens)
+    penalty_logits = jnp.where(penalty_logits>0, penalty_logits/repetition_penalty, penalty_logits*repetition_penalty)
+    return logits.at[tokens].set(penalty_logits)
 
 class CausalTransformer:
     def __init__(self, config):
@@ -195,11 +199,13 @@ class CausalTransformer:
                 transformer = CausalTransformerShard(config)
                 _, initial_state = transformer.generate_initial(context, ctx_length)
 
+                repetition_penalty = sampler_options.pop('repetition_penalty', None)
                 def generate_scan_fn(carry, sampler_input):
                     next_token, decode_state, sample_key = carry
                     sample_key, new_key = jax.random.split(sample_key)
 
                     logits, new_state = transformer.generate_once(next_token, decode_state)
+
                     next_token, sample_info = sampler(sample_key, logits, sampler_input, **sampler_options)
 
                     if self.return_logits:
@@ -244,7 +250,7 @@ class CausalTransformer:
                                                                  ["batch", ...],
                                                                  ["batch", ...],
                                                                  ["batch", ...]),
-                                                        out_axes=["batch", ...],
+                                                        out_axes=(["shard", "batch", ...], ["batch", ...]),
                                                         axis_resources={'shard': 'mp', 'batch': 'dp'})
 
         self.move_xmap = jax.experimental.maps.xmap(fun=lambda x, _: to_bf16(x),
